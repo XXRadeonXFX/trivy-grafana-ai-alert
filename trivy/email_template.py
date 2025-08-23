@@ -15,7 +15,7 @@ def build_email(counts, vulns, secrets, ci_url):
 
     # Header
     html = f"""
-    <p>
+    <p style="font-siz:16px: line-height:21px;">
         <b>CRITICAL:</b> {counts['CRITICAL']} |
         <b>HIGH:</b> {counts['HIGH']} |
         <b>MEDIUM:</b> {counts['MEDIUM']} |

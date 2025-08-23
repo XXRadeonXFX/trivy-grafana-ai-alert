@@ -3,12 +3,6 @@ import os, sys, json, psycopg2
 from datetime import datetime
 import requests
 
-# if len(sys.argv) < 12:
-#     print("Usage: report.py <json_path> <image> <tag> <project_name> <ci_url> <CVE_DB_HOST> <CVE_DB_USERNAME> <CVE_DB_PASSWORD> <CVE_DB_NAME> <ALERT_MANAGER_URL> <ALERT_MANAGER_SECRET>", file=sys.stderr)
-#     sys.exit(1)
-
-# json_path, image, tag, project_name, ci_url, CVE_DB_HOST, CVE_DB_USERNAME, CVE_DB_PASSWORD, CVE_DB_NAME, ALERT_MANAGER_URL, ALERT_MANAGER_SECRET = sys.argv[1:12]
-
 if len(sys.argv) < 10:  # minimum required arguments
     print("Usage: report.py <json_path> <image> <tag> <project_name> <ci_url> <CVE_DB_HOST> <CVE_DB_USERNAME> <CVE_DB_PASSWORD> <CVE_DB_NAME>", file=sys.stderr)
     sys.exit(1)
@@ -22,20 +16,6 @@ CVE_DB_HOST = sys.argv[6]
 CVE_DB_USERNAME = sys.argv[7]
 CVE_DB_PASSWORD = sys.argv[8]
 CVE_DB_NAME = sys.argv[9]
-
-
-print(f"json_path: {json_path}", flush=True)
-print(f"image: {image}", flush=True)
-print(f"tag: {tag}", flush=True)
-print(f"project_name: {project_name}", flush=True)
-print(f"ci_url: {ci_url}", flush=True)
-print(f"CVE_DB_HOST: {CVE_DB_HOST}", flush=True)
-print(f"CVE_DB_USERNAME: {CVE_DB_USERNAME}", flush=True)
-print(f"CVE_DB_PASSWORD: {CVE_DB_PASSWORD}", flush=True)
-print(f"CVE_DB_NAME: {CVE_DB_NAME}", flush=True)
-
-
-# ci_url = os.getenv("CI_URL")
 
 if not json_path or not os.path.exists(json_path):
     print(f"Report not found: {json_path}", file=sys.stderr)
@@ -256,8 +236,7 @@ print_summary = (
     f"Project: {project_name}\n"
     f"Image: {image}:{tag}\n"
     f"CRITICAL: {counts['CRITICAL']} | HIGH: {counts['HIGH']} | "
-    f"MEDIUM: {counts['MEDIUM']} | LOW: {counts['LOW']} | UNKNOWN: {counts['UNKNOWN']} | build_id: {build_id} \n" 
-    + (f"CI: {ci_url}\n" if ci_url else "")
+    f"MEDIUM: {counts['MEDIUM']} | LOW: {counts['LOW']} | UNKNOWN: {counts['UNKNOWN']} | build_id: {build_id} \n"
 )
 
 print(print_summary)

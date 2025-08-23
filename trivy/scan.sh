@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Scan the images "
+echo "Scan the image..."
 
 IMAGE_NAME=$1
 TAG=$2
@@ -54,7 +54,5 @@ trivy image \
 
 JSON_PATH="$REPORTS_DIR/scan-report-$TAG.json"
 
-# Call the Report API
+# Call the report.py to store data to DB
 ./trivy/report.py "$JSON_PATH" "$IMAGE_NAME" "$TAG" "$PROJECT_NAME" "$CI_URL" "$CVE_DB_HOST" "$CVE_DB_USERNAME" "$CVE_DB_PASSWORD" "$CVE_DB_NAME" "$ALERT_MANAGER_URL" "$ALERT_MANAGER_SECRET"
-
-# echo "JSON_PATH=$JSON_PATH" >> "$WORKSPACE/env.properties"

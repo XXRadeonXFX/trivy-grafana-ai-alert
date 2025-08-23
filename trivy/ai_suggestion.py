@@ -34,7 +34,6 @@ def ai_suggestion(build_id, url, api_secret):
         print(f"AI Suggestion API call failed: {e}", file=sys.stderr, flush=True)
         return {"error": str(e)}
 
-
 def main():
     """
     Entry point for CLI usage.
@@ -48,14 +47,9 @@ def main():
     alert_manager_url = sys.argv[2].rstrip("/")
     alert_manager_secret = sys.argv[3]
 
-    print(f"Using URL: {alert_manager_url}")
-    print(f"Using Secret: {alert_manager_secret}")
-    print(f"Processing Build ID: {build_id}")
-
     result = ai_suggestion(build_id, f"{alert_manager_url}/generate-ai-suggestion", alert_manager_secret)
     print("\nAI Suggestion API Response:")
     print(json.dumps(result, indent=4))
-
 
 if __name__ == "__main__":
     main()

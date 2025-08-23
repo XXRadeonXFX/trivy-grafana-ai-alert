@@ -157,7 +157,7 @@ pipeline {
             }
         }
 
-        stage("AI Recommendation") {
+        stage("Smart AI Recommendation Generate") {
             when {
                 expression { return env.REF_BUILD_ID?.trim() }
             }
@@ -169,7 +169,7 @@ pipeline {
             }
         }
 
-        stage("Validate Vuln Outcome") {
+        stage("Validate Vulnerability Outcome") {
             steps {
                 script {
                     // Keep only the last 3 lines (your summary)
@@ -288,15 +288,15 @@ pipeline {
 <html>
 <body>
 <h3>${env.JOB_NAME} Deployment FAILED ❌</h3>
-<p><strong>Job:</strong> ${env.JOB_NAME}</p>
-<p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
-<p><strong>Git Repo:</strong> ${env.GIT_REPO}</p>
-<p><strong>Docker Image:</strong> ${ECR_REPO_PATH}:${IMAGE_TAG}</p>
-<p><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
-<p><strong>🔎 Trivy Scan Report:</strong></p>
+<p style="font-siz:16px: line-height:21px;"><strong>Job:</strong> ${env.JOB_NAME}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Git Repo:</strong> ${env.GIT_REPO}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Docker Image:</strong> ${ECR_REPO_PATH}:${IMAGE_TAG}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
+<p style="font-siz:18px: line-height:25px;"><strong>🔎 Trivy Scan Report:</strong></p>
 ${env.SCAN_RESULT}
-<p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
+<p style="font-siz:16px: line-height:21px;"><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
 </body>
 </html>
 """,
@@ -330,15 +330,15 @@ ${env.SCAN_RESULT}
 <html>
 <body>
 <h3>${env.JOB_NAME} Build & Deployment SUCCEEDED ✅</h3>
-<p><strong>Job:</strong> ${env.JOB_NAME}</p>
-<p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
-<p><strong>Git Repo:</strong> ${env.GIT_REPO}</p>
-<p><strong>Docker Image:</strong> ${ECR_REPO_PATH}:${IMAGE_TAG}</p>
-<p><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
-<p><strong>🔎 Trivy Scan Report:</strong></p>
+<p style="font-siz:16px: line-height:21px;"><strong>Job:</strong> ${env.JOB_NAME}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Git Repo:</strong> ${env.GIT_REPO}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Docker Image:</strong> ${ECR_REPO_PATH}:${IMAGE_TAG}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
+<p style="font-siz:16px: line-height:21px;"><strong>🔎 Trivy Scan Report:</strong></p>
 ${env.SCAN_RESULT}
-<p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
+<p style="font-siz:16px: line-height:21px;"><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
 </body>
 </html>
 """,

@@ -333,115 +333,147 @@ async def generate_text(request: PromptRequest,api_secret: str = Header(None)):
     if api_secret != WEBHOOK_API_SECRET:
         raise HTTPException(status_code=403, detail="Invalid API Key")
     try:
-        print("ss")
         ai_engine = request.ai_engine
         model= request.model
         build_id = request.build_id
 
-        conn = get_db_connection()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        select_query = """
-            SELECT id, project, image, tag, ci_url
-            FROM build_reports
-            WHERE id = %s
-        """
-        cur.execute(select_query, (build_id,))
-        row = cur.fetchone()
+        # Count the Vulnerability
+        check = check_vulnerability_count(build_id)
 
-        tag = row['tag']
-        ci_url = row['ci_url']
+        if check >0:
 
-        # Get the CVE lists
-        cve_name = get_vuln_ids(build_id)
 
-        project_name = row['project']
-        image_name= str(row['image'])+":"+str(row['tag'])
-        
-        prompt = f"""
-            You are a Security and DevSecOps expert. I am using the docker for my project :
+            conn = get_db_connection()
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            select_query = """
+                SELECT id, project, image, tag, ci_url
+                FROM build_reports
+                WHERE id = %s
+            """
+            cur.execute(select_query, (build_id,))
+            row = cur.fetchone()
 
-            I ran a vulnerability scan and found these CVEs on my docker image:
-            {cve_name}
+            tag = row['tag']
+            ci_url = row['ci_url']
 
-            Your task:
-            1. For each unique CVE, give a short, simple explanation of the issue.
-            2. Provide the exact fix command (e.g., apt-get install <package>=<fixed-version> or pip install <package>==<version>).
-            3. Group CVEs if the same package upgrade fixes multiple issues.
-            4. Show HIGH severity CVEs and their fixes first.
-            5. Output should ONLY be in bullet points:
-            - CVE-ID → Short explanation → Fix command
-            6. At the end, provide a single Dockerfile snippet with all necessary changes applied.
+            # Get the CVE lists
+            cve_name = get_vuln_ids(build_id)
 
-            👉 Example of expected response format:
-            <h4>HIGH severity CVEs   </h4>
-            <ul>
-            <li>CVE-2025-1390 → Python buffer overflow → apt-get install libpython3.8=3.8.18-2+deb12u3</li>
+            project_name = row['project']
+            image_name= str(row['image'])+":"+str(row['tag'])
+            
+            prompt = f"""
+                You are a Security and DevSecOps expert. I am using the docker for my project :
 
-            <li>CVE-2025-24528, CVE-2024-26462 → zlib vulnerabilities → apt-get install zlib1g=1:1.2.13.dfsg-1+deb12u3</li>
+                I ran a vulnerability scan and found these CVEs on my docker image:
+                {cve_name}
 
-            <li>CVE-2025-32988 → OpenSSL heap overflow → apt-get install libssl1.1=1.1.1n-0+deb12u3</li>
-            </ul>
+                Your task:
+                1. For each unique CVE, give a short, simple explanation of the issue.
+                2. Provide the exact fix command (e.g., apt-get install <package>=<fixed-version> or pip install <package>==<version>).
+                3. Group CVEs if the same package upgrade fixes multiple issues.
+                4. Show HIGH severity CVEs and their fixes first.
+                5. Output should ONLY be in bullet points:
+                - CVE-ID → Short explanation → Fix command
+                6. At the end, provide a single Dockerfile snippet with all necessary changes applied.
 
-            <h4>Dockerfile snippet   </h4>
-            RUN apt-get update && \ apt-get install -y --no-install-recommends \ libssl1.1=1.1.1n-0+deb12u3 \ zlib1g=1:1.2.13.dfsg-1+deb12u3 && \ rm -rf /var/lib/apt/lists/* 
-        """
+                👉 Example of expected response format:
+                <h4>HIGH severity CVEs   </h4>
+                <ul>
+                <li>CVE-2025-1390 → Python buffer overflow → apt-get install libpython3.8=3.8.18-2+deb12u3</li>
 
-        if ai_engine == "gemini":
-            if not GEMINI_API_KEY:
-                raise RuntimeError("Set GEMINI_API_KEY before using Gemini engine.")
-            client = genai.Client(api_key=GEMINI_API_KEY)
-            response = client.models.generate_content(
-                model=model,
-                contents=prompt
-            )
-            ai_text = response.text
+                <li>CVE-2025-24528, CVE-2024-26462 → zlib vulnerabilities → apt-get install zlib1g=1:1.2.13.dfsg-1+deb12u3</li>
 
-        elif ai_engine == "openai":
-            if not OPENAI_API_KEY:
-                raise RuntimeError("Set OPENAI_API_KEY before using OpenAI engine.")
-            openai.api_key = OPENAI_API_KEY
-            response = openai.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": "You are a helpful security and DevSecOps assistant."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0
-            )
-            ai_text = response.choices[0].message.content  # ✅ Correct access for HTML
+                <li>CVE-2025-32988 → OpenSSL heap overflow → apt-get install libssl1.1=1.1.1n-0+deb12u3</li>
+                </ul>
 
+                <h4>Dockerfile snippet   </h4>
+                RUN apt-get update && \ apt-get install -y --no-install-recommends \ libssl1.1=1.1.1n-0+deb12u3 \ zlib1g=1:1.2.13.dfsg-1+deb12u3 && \ rm -rf /var/lib/apt/lists/* 
+            """
+
+            if ai_engine == "gemini":
+                if not GEMINI_API_KEY:
+                    raise RuntimeError("Set GEMINI_API_KEY before using Gemini engine.")
+                client = genai.Client(api_key=GEMINI_API_KEY)
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt
+                )
+                ai_text = response.text
+
+            elif ai_engine == "openai":
+                if not OPENAI_API_KEY:
+                    raise RuntimeError("Set OPENAI_API_KEY before using OpenAI engine.")
+                openai.api_key = OPENAI_API_KEY
+                response = openai.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": "You are a helpful security and DevSecOps assistant."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0
+                )
+                ai_text = response.choices[0].message.content  # ✅ Correct access for HTML
+
+            else:
+                raise HTTPException(status_code=400, detail="Invalid ai_engine. Use 'gemini' or 'openai'.")
+
+            
+            if ai_text.startswith("```html") and ai_text.endswith("```"):
+                ai_text = ai_text[len("```html"): -3].strip()
+
+            # Save Data to the DB
+            update_ai_recommendation(build_id,ai_text)
+
+            email_html = ""
+            email_html += "<h2>📊 Vulnerability Fix - AI Recommendations </h2>"
+            email_html += "<h3>Project Details:<br> Project: "+project_name+" <br>Image Name - "+str(image_name)+" <br> Ref Build id - "+str(build_id)+" <br/> Jenkins Build Details: <a href='"+ci_url+"' >"+ci_url+"</a> </h3> <hr>"
+            email_html += "<h3>AI Recommendation</h3><div style='font-size:16px;line-height:21px;'><p>The below is the AI recommendations based on the following CVE issues reported on this build</p><p style='font-size:17px;line-height:23px;color:green;'>"+cve_name+"</p>"
+            email_html += ai_text
+            email_html += "</div>"
+            email_html += "<p style='color:red;font-style:italic;font-size:16px'>Note: This is AI Generated suggestion, this might be wrong as well. So Kindly Check the CVE Documentation for fixes and resolve the issue.</p>"
+
+            subject = f"🧠 Smart AI Alert: Vulnerability Fixes for {project_name} Build #{tag}"
+            send_email(subject,email_html)
+
+            return {
+                    "build_id": request.build_id,
+                    "ai_engine": request.ai_engine,
+                    "html_content": ai_text}
         else:
-            raise HTTPException(status_code=400, detail="Invalid ai_engine. Use 'gemini' or 'openai'.")
-
-        
-        if ai_text.startswith("```html") and ai_text.endswith("```"):
-            ai_text = ai_text[len("```html"): -3].strip()
-
-        # Save Data to the DB
-        update_ai_recommendation(build_id,ai_text)
-
-        email_html = ""
-        email_html += "<h2>📊 Vulnerability Fix - AI Recommendations </h2>"
-        email_html += "<h3>Project Details:<br> Project: "+project_name+" <br>Image Name - "+str(image_name)+" <br> Ref Build id - "+str(build_id)+" <br/> Jenkins Build Details: <a href='"+ci_url+"' >"+ci_url+"</a> </h3> <hr>"
-        email_html += "<h3>AI Recommendation</h3><div style='font-size:16px;line-height:21px;'><p>The below is the AI recommendations based on the following CVE issues reported on this build</p><p style='font-size:17px;line-height:23px;color:green;'>"+cve_name+"</p>"
-        email_html += ai_text
-        email_html += "</div>"
-        email_html += "<p style='color:red;font-style:italic;font-size:16px'>Note: This is AI Generated suggestion, this might be wrong as well. So Kindly Check the CVE Documentation for fixes and resolve the issue.</p>"
-
-        subject = f"🧠 Smart AI Alert: Vulnerability Fixes for {project_name} Build #{tag}"
-        send_email(subject,email_html)
-
-        return {
-                "build_id": request.build_id,
-                "ai_engine": request.ai_engine,
-                "html_content": ai_text}
+            return {
+                    "build_id": request.build_id,
+                    "ai_engine": request.ai_engine,
+                    "html_content": "No vulnerabilities found 🎉"}
 
     except Exception as e:
         print(f"Error fetching Data: {e}")
         raise HTTPException(status_code=500, detail="Error fetching API details")
 
-#----- Get the List of CVE for AI suggestion ---
+#----- Get the Count of CVE for AI suggestion ---
+def check_vulnerability_count(build_id):
+    """
+    Returns the count of unique vulnerabilities for the given build_id.
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
 
+    query = """
+        SELECT COUNT(DISTINCT vuln_id) AS vuln_count
+        FROM trivy_results
+        WHERE build_id = %s
+    """
+    
+    cur.execute(query, (build_id,))
+    result = cur.fetchone()
+    vuln_count = result[0] if result else 0
+
+    cur.close()
+    conn.close()
+    
+    return vuln_count
+
+#----- Get the List of CVE for AI suggestion ---
 def get_vuln_ids(build_id):
     """
     Returns a comma-separated string of unique vuln_id for the given build_id.
@@ -466,7 +498,6 @@ def get_vuln_ids(build_id):
     conn.close()
     
     return vuln_ids_str
-
 
 #--- Save AI Recommendation to DB----
 def update_ai_recommendation(build_id, html_content):
