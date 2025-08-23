@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO = "https://github.com/thirumalai-py/trivy-with-grafana-alertmanager-ai"
+        GIT_REPO = "https://github.com/thirumalai-py/trivy-grafana-ai-alert"
         GIT_BRANCH = "main"
         EC2_SSH = "thiru-ec2"
         EC2_USER = "ubuntu"
