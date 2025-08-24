@@ -46,7 +46,7 @@ pip install -r requirements.txt
 # Run the Trivy Scan
 trivy image \
     --ignore-unfixed \
-    --ignorefile .trivyignore \
+    --ignorefile ./trivy/.trivyignore \
     --timeout 10m \
     --format json \
     --output "$REPORTS_DIR/scan-report-$TAG.json" \

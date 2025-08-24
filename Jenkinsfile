@@ -279,7 +279,7 @@ pipeline {
         
     }
 
-     post {
+    post {
         failure {
             echo 'Build or test failed. Sending notifications...'
             emailext(

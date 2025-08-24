@@ -20,7 +20,7 @@ services:
 
   alert-service:
     build:
-      context: ./alertmanager
+      context: .
       dockerfile: Dockerfile
     container_name: alert-service
     restart: unless-stopped
