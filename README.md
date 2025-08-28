@@ -11,9 +11,6 @@
 8. [CI/CD Integration](#cicd-integration)
 9. [Notifications](#notifications)
 10. [Dashboard & Reporting](#dashboard--reporting)
-11. [Contributing](#contributing)
-12. [License](#license)
-13. [Acknowledgements](#acknowledgements)
 
 ---
 
@@ -66,9 +63,7 @@ The below is the folder structure of the code with the files to be added along w
 │
 ├── grafana-dashboards/ # Pre-built dashboards for monitoring vulnerabilities
 │ ├── Build - Dashboard.json
-│ ├── Build - Dashboard-Exported.json
 │ ├── Trivy Project Security Dashboard.json
-│ └── Trivy Project Security Dashboard-Exported.json
 │
 ├── docker-compose-grafana.yaml # Docker Compose file for Grafana & Alert Manager Code
 ├── .gitignore # Git ignore file
@@ -276,7 +271,7 @@ Body:
   - The repository includes a prebuilt dashboard JSON file under `grafana-dashboard/`.  
   - To import:
     1. Navigate to **Grafana → Dashboards → Import**.
-    2. Upload the `grafana-dashboard/Build - Dashboard- Exported.json` file and also `Trivy Project Security Dashboard-Exported.json`. Totally 2 dashboard
+    2. Upload the `grafana-dashboard/Build - Dashboard.json` file and also `Trivy Project Security Dashboard.json`. Totally 2 dashboard
     3. Select your PostgreSQL data source when prompted.
   - This dashboard provides:
     - Vulnerability trends (Critical, High, Medium counts over time)
@@ -587,16 +582,6 @@ This project integrates with Grafana to provide rich visual dashboards for vulne
   - Now we have 2 dashboards `Trivy Project Security Dashboard` and `Build Dashboard`
   - The build dashboard is linked from the `Trivy Project Security Dashboard` 
   > ![Verify Build Dashboard Linking](output/grafana-both-dashboard.png)
-
-
-## Contributing
-Guidelines for contributing to the project.
-
-## License
-License type and link (if applicable).
-
-## Acknowledgements
-Credits to tools, libraries, and references used in the project.
 
 
 
