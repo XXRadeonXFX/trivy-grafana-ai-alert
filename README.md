@@ -540,8 +540,7 @@ This project integrates with Grafana to provide rich visual dashboards for vulne
   > ![Upload Dashboard JSON](output/grafana-upload-trivy-dashboard.png)
 
 - **Select Data Source**:
-  - When prompted, choose the PostgreSQL data source configured in **Step 1**.  
-  > ![Select Data Source](output/grafana-select-datasource.png)
+  - When prompted, choose the PostgreSQL data source configured in **Step 1**
 
 - **Click Import**:
   - The `Trivy Project Security Dashboard` will now appear in your Grafana dashboard list.  
