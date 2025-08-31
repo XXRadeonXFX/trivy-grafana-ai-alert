@@ -60,7 +60,7 @@ The below is the folder structure of the code with the files to be added along w
 │ ├── app.py # Main application for alert Management and AI Recommendation
 │ ├── Dockerfile # Docker setup for alertmanager
 │ ├── requirements.txt # Python dependencies for alertmanager
-│ └── docker-compose-grafana.yaml
+│ └── docker-compose.yaml
 │
 ├── grafana-dashboards/ # Pre-built dashboards for monitoring vulnerabilities
 │ ├── Build - Dashboard.json
