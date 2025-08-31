@@ -6,7 +6,7 @@ pipeline {
         GIT_BRANCH = "main"
         EC2_SSH = "thiru-ec2"
         EC2_USER = "ubuntu"
-        EC2_HOST = "13.235.114.199"
+        EC2_HOST = "13.201.59.34"
         AWS_REGION = "ap-south-1"
         ECR_REPO_PATH = "975050024946.dkr.ecr.ap-south-1.amazonaws.com/thirumalai-b10/user-api-trivy"
         ECR_REPO_NAME = "thirumalai-b10/user-api-trivy"

@@ -54,18 +54,18 @@ The below is the folder structure of the code with the files to be added along w
 │ ├── ai_suggestion.py # AI-based remediation suggestions
 │ ├── exceptions.txt # List of vulnerabilities to ignore/exceptions
 │ ├── .trivyignore # Trivy ignore file for known vulnerabilities
-│ ├── trivy_jenkins_stage.txt  # Jenkins Code with ENV Variables, Stage Code and POST Action Code
+│ └── trivy_jenkins_stage.txt  # Jenkins Code with ENV Variables, Stage Code and POST Action Code
 │
 ├── alertmanager/ # Service to handle alerting and notifications, Automated Alerts and AI Recommendation
 │ ├── app.py # Main application for alert Management and AI Recommendation
 │ ├── Dockerfile # Docker setup for alertmanager
-│ └── requirements.txt # Python dependencies for alertmanager
+│ ├── requirements.txt # Python dependencies for alertmanager
+│ └── docker-compose-grafana.yaml
 │
 ├── grafana-dashboards/ # Pre-built dashboards for monitoring vulnerabilities
 │ ├── Build - Dashboard.json
-│ ├── Trivy Project Security Dashboard.json
+│ └── Trivy Project Security Dashboard.json
 │
-├── docker-compose-grafana.yaml # Docker Compose file for Grafana & Alert Manager Code
 ├── .gitignore # Git ignore file
 └── README.md # Project documentation (this file)
 ```
