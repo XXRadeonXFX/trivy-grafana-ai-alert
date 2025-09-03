@@ -278,6 +278,15 @@ Body:
   "model": "gpt-4.1-nano"
 }
 ```
+```
+FOR GEMINI VM test
+
+curl -X POST "http://4.240.98.78:8000/generate-ai-suggestion"   -H "Content-Type: application/json"   -H "api-secret: yourapisecret"   -d '{
+    "build_id": 1,
+    "ai_engine": "gemini",
+    "model": "gemini-2.0-flash"
+  }'
+```
 
 **6. Integration with Grafana**
 
